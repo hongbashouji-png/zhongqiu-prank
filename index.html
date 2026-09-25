@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0d1526" />
+<title>中秋节快乐 🥮</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+  body {
+    background: radial-gradient(circle at 50% 18%, #23345e 0%, #0d1526 55%, #05080f 100%);
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+    color: #fff;
+    -webkit-user-select: none; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .stage {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+  }
+  .moon { font-size: 96px; line-height: 1; margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  h1 {
+    font-size: clamp(40px, 9vw, 96px);
+    line-height: 1.15;
+    color: #ffd76e;
+    text-shadow: 0 0 30px rgba(255, 190, 60, .55), 0 6px 30px rgba(0, 0, 0, .35);
+    letter-spacing: 2px;
+  }
+  .sub { margin-top: 18px; font-size: clamp(16px, 4vw, 28px); color: #ffedd0; opacity: .85; letter-spacing: 4px; }
+  .punchline {
+    font-size: clamp(38px, 8.5vw, 88px);
+    line-height: 1.25;
+    color: #fff;
+    text-shadow: 0 0 45px rgba(120, 255, 200, .5), 0 6px 30px rgba(0, 0, 0, .35);
+    animation: pop .55s cubic-bezier(.2, 1.6, .4, 1) both;
+  }
+  @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .fade-out { opacity: 0; transition: opacity .5s ease; }
+  .hidden { display: none !important; }
+  .rain {
+    position: fixed; inset: 0; overflow: hidden;
+    pointer-events: none; z-index: 9999;
+  }
+  .drop {
+    position: absolute; top: -15vh;
+    animation-name: fall; animation-timing-function: linear; animation-fill-mode: both;
+    will-change: transform;
+  }
+  @keyframes fall {
+    from { transform: translateY(0); }
+    to   { transform: translateY(125vh); }
+  }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage1">
+    <div class="moon">🌕</div>
+    <h1>祝贺中秋节快乐</h1>
+    <div class="sub">🥮 阖家团圆 · 幸福安康 🥮</div>
+  </div>
+
+  <div class="stage hidden" id="stage2">
+    <div class="punchline">让你快乐你就真快乐了老弟？😏</div>
+  </div>
+
+  <div class="rain" id="rain"></div>
+
+  <script>
+    (function () {
+      var stage1 = document.getElementById('stage1');
+      var stage2 = document.getElementById('stage2');
+      var rain = document.getElementById('rain');
+      var EMOJI = '\uD83D\uDE02'; // 😂
+
+      function spawnDrop(delay) {
+        var d = document.createElement('span');
+        d.className = 'drop';
+        d.textContent = EMOJI;
+        var size = 24 + Math.random() * 46;                 // 24–70px
+        var dur = 2 + Math.random() * 3.5;                  // 2–5.5s
+        d.style.fontSize = size + 'px';
+        d.style.left = (Math.random() * 100) + 'vw';
+        d.style.animationDuration = dur + 's';
+        d.style.animationDelay = delay + 's';
+        d.style.setProperty('rotate', (Math.random() * 360 - 180) + 'deg');
+        rain.appendChild(d);
+        d.addEventListener('animationend', function () { d.remove(); });
+      }
+
+      function startRain() {
+        // 先用负延迟铺满一屏，营造"雨已经在下了"的效果
+        for (var i = 0; i < 70; i++) {
+          spawnDrop(-(Math.random() * 5));
+        }
+        // 持续下落的雨
+        setInterval(function () { spawnDrop(0); }, 85);
+      }
+
+      // 3 秒后：祝福语 -> 恶搞语 -> 😂 雨
+      setTimeout(function () {
+        stage1.classList.add('fade-out');
+        setTimeout(function () {
+          stage1.classList.add('hidden');
+          stage2.classList.remove('hidden');
+          startRain();
+        }, 500);
+      }, 3000);
+    })();
+  </script>
+</body>
+</html>
