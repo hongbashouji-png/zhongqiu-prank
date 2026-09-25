@@ -123,9 +123,15 @@
         }
       }
 
-      // 微信内置浏览器自动播放兼容
+      // 微信内置浏览器：桥就绪后静默预热（不提前出声），确保 1.5 秒进入 😂 时自动播放
       document.addEventListener('WeixinJSBridgeReady', function () {
-        if (laughEl) { laughEl.play().catch(function () {}); }
+        if (!laughEl) return;
+        laughEl.muted = true;
+        var wp = laughEl.play();
+        if (wp && typeof wp.catch === 'function') { wp.catch(function () {}); }
+        laughEl.pause();
+        laughEl.currentTime = 0;
+        laughEl.muted = false;
       }, false);
 
       // 1.5 秒后：祝福语 -> 恶搞语 -> 😂 雨 + 笑声
